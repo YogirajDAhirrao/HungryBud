@@ -1,8 +1,9 @@
 import express from "express";
-const app = express();
+import app from "./app";
+
 app.get("/", (req, res) => {
   res.send("Test");
 });
 app.listen(3001, () => {
-  console.log("Test");
+  console.log("Started");
 });

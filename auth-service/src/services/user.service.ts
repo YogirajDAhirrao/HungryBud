@@ -1,4 +1,5 @@
-import { prisma } from "../prisma/client";
+
+import prisma from "../prisma/client";
 import { hashpassword } from "../utils/bcrypt";
 
 export const userService = {
