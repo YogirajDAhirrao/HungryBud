@@ -4,31 +4,32 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 
+// 👇 LINKS to Auth Service User.id!
 model Restaurant {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   name        String
-  description String?
   address     String
   phone       String?
-  ownerId     Int
+  ownerId     String   // 👈 Foreign key to User.id (Auth Service!)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
+  
   menuItems   MenuItem[]
+  // No @relation - we don't own User table!
 }
 
+// 👇 Menu Items for each Restaurant
 model MenuItem {
-  id            Int      @id @default(autoincrement())
-  name          String
-  description   String?
-  price         Float
-  available     Boolean  @default(true)
-  restaurantId  Int
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  imageUrl    String?
+  restaurantId String
+  
+  restaurant  Restaurant @relation(fields: [restaurantId], references: [id])
+  createdAt   DateTime  @default(now())
 }

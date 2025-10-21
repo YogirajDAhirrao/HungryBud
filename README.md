@@ -125,3 +125,7 @@ Food delivery systems are **large, complex, and scalable** (like Swiggy/Zomato/U
 ---
 
 Do you want me to **draw a microservices architecture diagram** for this Food Order System, or should I give you a **code skeleton for one service (like Order Service)** to make it concrete?
+
+
+## NOTES:
+Api  gate way will add userId and userType to req headers
