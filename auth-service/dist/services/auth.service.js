@@ -14,14 +14,17 @@ const bcrypt_1 = require("../utils/bcrypt");
 const jwt_1 = require("../utils/jwt");
 const user_service_1 = require("./user.service");
 exports.authService = {
-    register(name, email, password) {
+    register(name, email, password, userType) {
         return __awaiter(this, void 0, void 0, function* () {
             const existing = yield user_service_1.userService.getUserByEmail(email);
             if (existing)
                 throw new Error("User already exists");
-            const user = yield user_service_1.userService.createUser(name, email, password);
+            const user = yield user_service_1.userService.createUser(name, email, password, userType); // 👈 Pass userType
             const token = (0, jwt_1.generateToken)(user.id);
-            return { user, token };
+            return {
+                user: { id: user.id, email: user.email, userType: user.userType },
+                token,
+            }; // 👈 Include userType
         });
     },
     login(email, password) {
@@ -33,7 +36,10 @@ exports.authService = {
             if (!valid)
                 throw new Error("Invalid credentials");
             const token = (0, jwt_1.generateToken)(user.id);
-            return { user, token };
+            return {
+                user: { id: user.id, email: user.email, userType: user.userType },
+                token,
+            }; // 👈 Include userType
         });
     },
 };

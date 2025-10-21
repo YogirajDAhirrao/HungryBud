@@ -13,7 +13,7 @@ exports.getAllUsers = void 0;
 const user_service_1 = require("../services/user.service");
 const getAllUsers = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield user_service_1.userService.getAllUser();
+        const users = yield user_service_1.userService.getAllUsers();
         res.json(users);
     }
     catch (err) {
