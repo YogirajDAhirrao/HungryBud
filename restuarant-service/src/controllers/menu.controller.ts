@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { menuService } from "../services/menu.service";
+import { menuService } from "../services/menu.service.js";
 
 export const getRestaurantMenu = async (req: Request, res: Response) => {
   try {

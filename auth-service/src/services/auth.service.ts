@@ -7,13 +7,13 @@ export const authService = {
     name: string,
     email: string,
     password: string,
-    userType?: string
+    userType: string = "CUSTOMER"
   ) {
     const existing = await userService.getUserByEmail(email);
     if (existing) throw new Error("User already exists");
 
     const user = await userService.createUser(name, email, password, userType); // 👈 Pass userType
-    const token = generateToken(user.id);
+    const token = generateToken(user.id, user.userType);
     return {
       user: { id: user.id, email: user.email, userType: user.userType },
       token,
@@ -27,7 +27,7 @@ export const authService = {
     const valid = await comparePassword(password, user.password);
     if (!valid) throw new Error("Invalid credentials");
 
-    const token = generateToken(user.id);
+    const token = generateToken(user.id,user.userType);
     return {
       user: { id: user.id, email: user.email, userType: user.userType },
       token,

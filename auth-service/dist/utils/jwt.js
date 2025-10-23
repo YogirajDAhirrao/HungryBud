@@ -6,8 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = exports.generateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../config");
-const generateToken = (userId) => {
-    return jsonwebtoken_1.default.sign({ id: userId }, config_1.config.jwtSecret, { expiresIn: "1d" });
+const generateToken = (userId, userType) => {
+    const payload = {
+        userId,
+        userType,
+    };
+    return jsonwebtoken_1.default.sign(payload, config_1.config.jwtSecret, { expiresIn: "1d" });
 };
 exports.generateToken = generateToken;
 const verifyToken = (token) => {
