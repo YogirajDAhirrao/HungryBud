@@ -4,5 +4,5 @@ const express_1 = require("express");
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 const controllers_1 = require("../controllers");
 const router = (0, express_1.Router)();
-router.post("/", auth_middleware_1.verifyAuth, controllers_1.getAllUsers);
+router.get("/", auth_middleware_1.verifyAuth, controllers_1.getAllUsers);
 exports.default = router;

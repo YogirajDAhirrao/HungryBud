@@ -1,54 +1,60 @@
 import express from "express";
 import cors from "cors";
-import { createProxyMiddleware } from "http-proxy-middleware";
+import proxy from "express-http-proxy"; // Import express-http-proxy
 import { config } from "./config";
 import { authMiddleware } from "./middlewares/authMiddleware";
 
 const app = express();
 app.use(cors());
-// app.use(express.json());🧩 Why This Happens
 
-// You have in both Gateway and Auth Service:
+// The express.json() middleware is still not needed in the gateway
+// because the proxy library streams the request body to the target service.
 // app.use(express.json());
-// express.json() uses raw-body internally to parse the body.
-// If the request is sent through the proxy from the gateway to auth service, the body can be lost or already read, causing raw-body to throw an error:
-// Error [ERR_STREAM_PREMATURE_CLOSE]: request body stream closed unexpectedly
-// Happens if the gateway doesn’t forward the body properly or Content-Length/Content-Type headers mismatch.
 
+// Proxy for authentication-related endpoints
 app.use(
   "/api/auth",
-  createProxyMiddleware({
-    target: config.AUTH_SERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: { "^/api/auth": "/api/auth" },
+  proxy(config.AUTH_SERVICE_URL, {
+    // We use proxyReqPathResolver to handle path rewriting
+    proxyReqPathResolver: (req) => {
+      // The original path is already correct for the auth service
+      return req.originalUrl;
+    },
   })
 );
 
+// Proxy for user-related endpoints
 app.use(
   "/api/users",
-  createProxyMiddleware({
-    target: config.AUTH_SERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: { "^/api/users": "/api/users" },
+  proxy(config.AUTH_SERVICE_URL, {
+    proxyReqPathResolver: (req) => {
+      // The original path is already correct for the auth service
+      return req.originalUrl;
+    },
   })
 );
 
+// Proxy for restaurant-related endpoints, with auth middleware
 app.use(
   "/api/restaurants",
-  authMiddleware,
-  createProxyMiddleware({
-    target: config.RESTAURANT_SERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: { "^/api/restaurants": "/restaurants" },
+  authMiddleware, // The auth middleware is still used here
+  proxy(config.RESTAURANT_SERVICE_URL, {
+    proxyReqPathResolver: (req) => {
+      // Rewrite the path from "/api/restaurants" to "/restaurants"
+      return req.originalUrl.replace("/api/restaurants", "/restaurants");
+    },
   })
 );
+
+// Proxy for restaurant menu endpoints, with auth middleware
 app.use(
   "/api/restaurant/menu",
-  authMiddleware,
-  createProxyMiddleware({
-    target: config.RESTAURANT_SERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: { "^/api/restaurant/menu": "/restaurant/menu" },
+  authMiddleware, // The auth middleware is still used here
+  proxy(config.RESTAURANT_SERVICE_URL, {
+    proxyReqPathResolver: (req) => {
+      // Rewrite the path from "/api/restaurant/menu" to "/restaurant/menu"
+      return req.originalUrl.replace("/api/restaurant/menu", "/restaurant/menu");
+    },
   })
 );
 
