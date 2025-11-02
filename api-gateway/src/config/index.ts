@@ -8,4 +8,5 @@ export const config = {
   AUTH_SERVICE_URL: process.env.AUTH_SERVICE_URL || "http://localhost:3001",
   RESTAURANT_SERVICE_URL:
     process.env.RESTAURANT_SERVICE_URL || "http://localhost:3002",
+  ORDER_SERVICE_URL: process.env.ORDER_SERVICE_URL || "http://localhost:3003",
 };

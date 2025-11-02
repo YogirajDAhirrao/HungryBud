@@ -29,6 +29,7 @@ export const authMiddleware = (
     const decoded = jwt.verify(token, config.jwtSecret) as JwtPayload;
 
     // ✅ Attach user info to request
+    console.log(decoded.userType);
     (req as any).user = {
       userId: decoded.userId,
       userType: decoded.userType,
@@ -41,4 +42,3 @@ export const authMiddleware = (
     return res.status(403).json({ message: "Invalid or expired token" });
   }
 };
-    

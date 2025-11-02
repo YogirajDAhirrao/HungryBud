@@ -43,6 +43,17 @@ app.use(
       // Rewrite the path from "/api/restaurants" to "/restaurants"
       return req.originalUrl.replace("/api/restaurants", "/restaurants");
     },
+    proxyReqOptDecorator: (proxyReqOpts, req) => {
+      const user = (req as any).user;
+      if (user) {
+        proxyReqOpts.headers = {
+          ...proxyReqOpts.headers,
+          "x-user-id": user.userId,
+          "x-user-type": user.userType,
+        };
+      }
+      return proxyReqOpts;
+    },
   })
 );
 
@@ -51,9 +62,40 @@ app.use(
   "/api/restaurant/menu",
   authMiddleware, // The auth middleware is still used here
   proxy(config.RESTAURANT_SERVICE_URL, {
-    proxyReqPathResolver: (req) => {
+    proxyReqPathResolver: (req) =>
       // Rewrite the path from "/api/restaurant/menu" to "/restaurant/menu"
-      return req.originalUrl.replace("/api/restaurant/menu", "/restaurant/menu");
+      req.originalUrl.replace("/api/restaurant/menu", "/restaurant/menu"),
+
+    proxyReqOptDecorator: (proxyReqOpts, req) => {
+      const user = (req as any).user;
+      if (user) {
+        proxyReqOpts.headers = {
+          ...proxyReqOpts.headers,
+          "x-user-id": user.userId,
+          "x-user-type": user.userType,
+        };
+      }
+      return proxyReqOpts;
+    },
+  })
+);
+
+app.use(
+  "/api/order",
+  authMiddleware,
+  proxy(config.ORDER_SERVICE_URL, {
+    proxyReqPathResolver: (req) =>
+      req.originalUrl.replace("/api/order", "/order"),
+    proxyReqOptDecorator: (proxyReqOpts, req) => {
+      const user = (req as any).user;
+      if (user) {
+        proxyReqOpts.headers = {
+          ...proxyReqOpts.headers,
+          "x-user-id": user.userId,
+          "x-user-type": user.userType,
+        };
+      }
+      return proxyReqOpts;
     },
   })
 );

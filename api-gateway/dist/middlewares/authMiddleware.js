@@ -21,6 +21,7 @@ const authMiddleware = (req, res, next) => {
         // ✅ Verify token
         const decoded = jsonwebtoken_1.default.verify(token, config_1.config.jwtSecret);
         // ✅ Attach user info to request
+        console.log(decoded.userType);
         req.user = {
             userId: decoded.userId,
             userType: decoded.userType,

@@ -4,14 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
-const resturant_routes_1 = __importDefault(require("./routes/resturant.routes"));
-const menu_routes_1 = __importDefault(require("./routes/menu.routes"));
+const order_routes_1 = __importDefault(require("./routes/order.routes"));
 const extractUser_middleware_1 = require("./middlewares/extractUser.middleware");
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(extractUser_middleware_1.extractUser);
-app.use("/restaurants", resturant_routes_1.default);
-app.use("/restaurant/menu", menu_routes_1.default);
+// Mount all order routes under /orders
+app.use("/order", order_routes_1.default);
 exports.default = app;
