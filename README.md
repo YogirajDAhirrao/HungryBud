@@ -1,131 +1,275 @@
-Perfect 👍 you’re asking about the **Online Food Order System in the context of microservices**.
+# 🍔 HungryBud Backend
 
-Let’s extend the earlier design into a **microservices architecture**.
+### **Production Grade Backend.**
 
----
-
-## 🔹 Why Microservices for Food Order System?
-
-Food delivery systems are **large, complex, and scalable** (like Swiggy/Zomato/Uber Eats). Monoliths become hard to scale, so microservices allow:
-
-* Independent scaling (e.g., Orders vs Payments)
-* Polyglot flexibility (different services can use different tech)
-* Fault isolation (payment failure doesn’t crash restaurant browsing)
+**HungryBud** is a scalable, microservices-based **Food Ordering System** where users can register, explore restaurants, browse menus, and place food orders — all through a distributed backend built with **Node.js, TypeScript, and PostgreSQL**.
 
 ---
 
-## 🔹 Possible Microservices Breakdown
+## 📘 Table of Contents
 
-### 1. **User Service**
-
-* Handles authentication & authorization (JWT/session).
-* Stores customer, restaurant, delivery partner, and admin profiles.
-* API examples:
-
-  * `POST /users/signup`
-  * `POST /users/login`
-  * `GET /users/{id}`
-
----
-
-### 2. **Restaurant Service**
-
-* Manages restaurants and menus.
-* API examples:
-
-  * `POST /restaurants`
-  * `GET /restaurants`
-  * `GET /restaurants/{id}/menu`
-  * `POST /restaurants/{id}/menu`
+* [Introduction](#introduction)
+* [Installation](#installation)
+* [Architecture Overview](#architecture-overview)
+* [Project Structure](#project-structure)
+* [Services Overview](#services-overview)
+* [API Gateway](#api-gateway)
+* [Middleware](#middleware)
+* [Controllers](#controllers)
+* [Authentication](#authentication)
+* [Error Handling](#error-handling)
+* [Development Practices](#development-practices)
+* [Contributing](#contributing)
 
 ---
 
-### 3. **Order Service**
+## 🚀 Introduction
 
-* Core of the system → manages order lifecycle.
-* Uses **State Pattern** for order status.
-* API examples:
+HungryBud demonstrates a **production-grade microservices architecture** for an online food delivery platform.
+Each service operates independently with its own database and can scale separately.
 
-  * `POST /orders` (place order)
-  * `GET /orders/{id}`
-  * `PUT /orders/{id}/status`
+Currently implemented services:
 
----
+* **Auth Service** – user authentication and management
+* **Restaurant Service** – manages restaurants and menus
+* **Order Service** – manages customer orders and order items
+* **API Gateway** – central entry point for routing, authentication, and service communication
 
-### 4. **Payment Service**
+Future planned services:
 
-* Manages payments, refunds, and invoices.
-* Integrates with gateways (Stripe, Razorpay, PayPal).
-* API examples:
-
-  * `POST /payments`
-  * `GET /payments/{id}`
+* **Payment Service**
+* **Delivery Service**
+* **Notification Service**
 
 ---
 
-### 5. **Delivery Service**
+## ⚙️ Installation
 
-* Assigns delivery partners to orders.
-* Tracks delivery status (Picked → In Transit → Delivered).
-* API examples:
+### 1. Clone the repository
 
-  * `POST /delivery/assign`
-  * `GET /delivery/{id}/status`
+```bash
+git clone https://github.com/your-username/hungrybud-backend.git
+cd hungrybud-backend
+```
 
----
+### 2. Install dependencies
 
-### 6. **Notification Service**
+Each service has its own `package.json`.
+Example for the Auth Service:
 
-* Sends email/SMS/push notifications to users.
-* Event-driven (listens to Kafka/RabbitMQ for order updates).
+```bash
+cd auth-service
+npm install
+```
 
----
+### 3. Set up environment variables
 
-### 7. **Review/Rating Service (Optional)**
+Each service should include a `.env` file. Example:
 
-* Customers can rate restaurants and delivery partners.
+```bash
+PORT=4000
+DATABASE_URL=postgresql://postgres:root@localhost:5434/hungrybud-auth
+JWT_SECRET=your_jwt_secret
+CORS_ORIGIN=http://localhost:5173
+```
 
----
+### 4. Start services using Docker (recommended)
 
-## 🔹 Communication Pattern
-
-* **Synchronous (REST/gRPC)** → For direct calls (e.g., Order → Payment).
-* **Asynchronous (Event-driven)** → For decoupling services (Kafka/RabbitMQ/SQS).
-
-  * Example: Order Service publishes *OrderCreated* → Payment Service consumes.
-
----
-
-## 🔹 Tech Stack
-
-* **Backend Services**: Node.js (Express/NestJS) or Java (Spring Boot)
-* **Database per service**:
-
-  * Users → PostgreSQL
-  * Orders → MongoDB
-  * Payments → MySQL
-* **API Gateway**: Handles routing, authentication, rate limiting.
-* **Service Discovery**: Eureka/Consul or Kubernetes.
-* **Containerization**: Docker + Kubernetes.
+```bash
+docker-compose up --build
+```
 
 ---
 
-## 🔹 Example Workflow
+## 🧹 Architecture Overview
 
-1. Customer places an order → API Gateway → **Order Service**.
-2. Order Service publishes `OrderCreated` event.
-3. **Payment Service** processes payment and publishes `PaymentSuccess`.
-4. **Delivery Service** assigns a delivery partner.
-5. **Notification Service** sends real-time updates to customer.
+HungryBud follows a **microservices architecture** with:
+
+* **API Gateway** – handles routing, authentication, and request forwarding
+* **Independent Services** – each with its own database and business logic
+* **Asynchronous communication** (planned) – via message queues for scalability
+
+**Tech Stack:**
+
+* **Node.js** + **TypeScript**
+* **Express.js**
+* **PostgreSQL (Prisma ORM)**
+* **Docker**
+* **JWT Authentication**
+* **API Gateway (express-http-proxy)**
 
 ---
 
-👉 This way, each service can **scale independently**, and you can add/remove services without touching the whole system.
+## 🗂️ Project Structure
+
+```
+hungrybud-backend/
+│
+├── api-gateway/
+│   ├── src/
+│   │   ├── app.ts
+│   │   ├── config/
+│   │   ├── middlewares/
+│   │   └── server.ts
+│   └── package.json
+│
+├── auth-service/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── routes/
+│   │   ├── prisma/
+│   │   └── middlewares/
+│   └── package.json
+│
+├── restaurant-service/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── routes/
+│   │   └── prisma/
+│   └── package.json
+│
+└── order-service/
+    ├── src/
+    │   ├── controllers/
+    │   ├── routes/
+    │   ├── services/
+    │   └── prisma/
+    └── package.json
+```
 
 ---
 
-Do you want me to **draw a microservices architecture diagram** for this Food Order System, or should I give you a **code skeleton for one service (like Order Service)** to make it concrete?
+## 🍽️ Services Overview
 
+### **Auth Service**
 
-## NOTES:
-Api  gate way will add userId and userType to req headers
+Handles:
+
+* User registration, login, logout
+* JWT-based authentication
+* Refresh token management
+
+### **Restaurant Service**
+
+Handles:
+
+* Restaurant registration (only by restaurant owners)
+* Menu management (add/update/delete menu items)
+
+### **Order Service**
+
+Handles:
+
+* Order creation
+* Order item management
+* Order state transitions (Placed → Confirmed → Preparing → Delivered)
+
+---
+
+## 🎉 API Gateway
+
+The **API Gateway** acts as a single entry point for all client requests.
+It:
+
+* Validates JWT tokens using middleware
+* Attaches user details (`x-user-id`, `x-user-type`) to requests
+* Routes requests to respective services (Auth, Restaurant, Order, etc.)
+
+Example route setup:
+
+```ts
+app.use(
+  "/api/restaurants",
+  authMiddleware,
+  proxy(config.RESTAURANT_SERVICE_URL, {
+    proxyReqPathResolver: (req) =>
+      req.originalUrl.replace("/api/restaurants", "/restaurants"),
+    proxyReqOptDecorator: (opts, req) => {
+      const user = (req as any).user;
+      if (user) {
+        opts.headers["x-user-id"] = user.userId;
+        opts.headers["x-user-type"] = user.userType;
+      }
+      return opts;
+    },
+  })
+);
+```
+
+---
+
+## 🧱 Middleware
+
+### In API Gateway
+
+* `authMiddleware` → Verifies JWT tokens and attaches `userId`, `userType`.
+
+### In Services
+
+* `extractUser` → Reads forwarded user headers and attaches to `req.user`.
+
+---
+
+## 🧠 Controllers
+
+Example: **Order Controller**
+
+```ts
+export const createOrder = async (req: Request, res: Response) => {
+  try {
+    const customerId = req.userId;
+    const { restaurantId, items } = req.body;
+
+    if (!restaurantId || !Array.isArray(items) || items.length === 0)
+      return res.status(400).json({ error: "Restaurant ID and items are required" });
+
+    const order = await orderService.createOrder(customerId, restaurantId, items);
+    res.status(201).json({ message: "Order created successfully", order });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message || "Failed to create order" });
+  }
+};
+```
+
+---
+
+## 🔐 Authentication
+
+* **Access Tokens (JWT):** Issued during login, verified by the API Gateway.
+* **Refresh Tokens (Optional Extension):** Can be used to reissue access tokens.
+* User info (`userId`, `userType`) is passed via **custom headers** from gateway → downstream services.
+
+---
+
+## ⚡ Error Handling
+
+Centralized error handling is applied at both service and gateway levels.
+Each service sends standardized error responses with consistent JSON structure.
+
+---
+
+## 🦯 Development Practices & SOLID Principles
+
+* **Single Responsibility Principle:** Each service focuses on one domain.
+* **Separation of Concerns:** Authentication, restaurant, and orders are isolated.
+* **Modular Design:** Controllers, routes, and services separated.
+* **Transaction Safety:** Order creation and order items handled atomically using Prisma transactions.
+* **Type Safety:** Built with TypeScript across all services.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+To contribute:
+
+1. Fork the repo
+2. Create a new branch (`feature/new-service`)
+3. Commit and push your changes
+4. Submit a Pull Request with a clear description
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
