@@ -18,6 +18,7 @@ export const createOrder = async (req: Request, res: Response) => {
         error: "Restaurant ID and items are required",
       });
     }
+    console.log(items);
 
     // ✅ Item-level validation
     for (const item of items) {

@@ -25,6 +25,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 error: "Restaurant ID and items are required",
             });
         }
+        console.log(items);
         // ✅ Item-level validation
         for (const item of items) {
             if (!item.menuItemId ||
