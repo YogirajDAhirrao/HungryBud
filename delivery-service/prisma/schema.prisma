@@ -6,9 +6,26 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+ output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+model Delivery {
+  id        String         @id @default(uuid())
+  orderId   String         @unique     // comes from Order Service
+  agentId   String?        // assigned later
+  status    DeliveryStatus @default(DELIVERY_CREATED)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+enum DeliveryStatus {
+  DELIVERY_CREATED
+  AGENT_ASSIGNED
+  PICKED_UP
+  ON_THE_WAY
+  DELIVERED
+  FAILED
 }

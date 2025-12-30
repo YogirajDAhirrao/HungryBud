@@ -1,12 +1,8 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const app_1 = __importDefault(require("./app"));
-app_1.default.get("/", (req, res) => {
+import app from "./app.js";
+import { config } from "./config/index.js";
+app.get("/", (req, res) => {
     res.send("Delivery service");
 });
-app_1.default.listen(3004, () => {
+app.listen(config.port, () => {
     console.log("started");
 });
