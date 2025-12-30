@@ -384,7 +384,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
-  Delivery: 'Delivery'
+  Delivery: 'Delivery',
+  DeliveryPartner: 'DeliveryPartner'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -400,7 +401,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "delivery"
+    modelProps: "delivery" | "deliveryPartner"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -478,6 +479,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DeliveryPartner: {
+      payload: Prisma.$DeliveryPartnerPayload<ExtArgs>
+      fields: Prisma.DeliveryPartnerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DeliveryPartnerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryPartnerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DeliveryPartnerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryPartnerPayload>
+        }
+        findFirst: {
+          args: Prisma.DeliveryPartnerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryPartnerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DeliveryPartnerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryPartnerPayload>
+        }
+        findMany: {
+          args: Prisma.DeliveryPartnerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryPartnerPayload>[]
+        }
+        create: {
+          args: Prisma.DeliveryPartnerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryPartnerPayload>
+        }
+        createMany: {
+          args: Prisma.DeliveryPartnerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DeliveryPartnerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryPartnerPayload>[]
+        }
+        delete: {
+          args: Prisma.DeliveryPartnerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryPartnerPayload>
+        }
+        update: {
+          args: Prisma.DeliveryPartnerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryPartnerPayload>
+        }
+        deleteMany: {
+          args: Prisma.DeliveryPartnerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DeliveryPartnerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DeliveryPartnerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryPartnerPayload>[]
+        }
+        upsert: {
+          args: Prisma.DeliveryPartnerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeliveryPartnerPayload>
+        }
+        aggregate: {
+          args: Prisma.DeliveryPartnerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDeliveryPartner>
+        }
+        groupBy: {
+          args: Prisma.DeliveryPartnerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DeliveryPartnerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DeliveryPartnerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DeliveryPartnerCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -527,6 +602,16 @@ export const DeliveryScalarFieldEnum = {
 } as const
 
 export type DeliveryScalarFieldEnum = (typeof DeliveryScalarFieldEnum)[keyof typeof DeliveryScalarFieldEnum]
+
+
+export const DeliveryPartnerScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  isOnline: 'isOnline',
+  createdAt: 'createdAt'
+} as const
+
+export type DeliveryPartnerScalarFieldEnum = (typeof DeliveryPartnerScalarFieldEnum)[keyof typeof DeliveryPartnerScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -598,6 +683,13 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -710,6 +802,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   delivery?: Prisma.DeliveryOmit
+  deliveryPartner?: Prisma.DeliveryPartnerOmit
 }
 
 /* Types for Logging */

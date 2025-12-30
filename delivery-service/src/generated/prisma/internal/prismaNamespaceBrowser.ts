@@ -51,7 +51,8 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  Delivery: 'Delivery'
+  Delivery: 'Delivery',
+  DeliveryPartner: 'DeliveryPartner'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -80,6 +81,16 @@ export const DeliveryScalarFieldEnum = {
 } as const
 
 export type DeliveryScalarFieldEnum = (typeof DeliveryScalarFieldEnum)[keyof typeof DeliveryScalarFieldEnum]
+
+
+export const DeliveryPartnerScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  isOnline: 'isOnline',
+  createdAt: 'createdAt'
+} as const
+
+export type DeliveryPartnerScalarFieldEnum = (typeof DeliveryPartnerScalarFieldEnum)[keyof typeof DeliveryPartnerScalarFieldEnum]
 
 
 export const SortOrder = {

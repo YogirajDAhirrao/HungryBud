@@ -22,3 +22,8 @@ export * from './enums.js';
  * 
  */
 export type Delivery = Prisma.DeliveryModel
+/**
+ * Model DeliveryPartner
+ * 
+ */
+export type DeliveryPartner = Prisma.DeliveryPartnerModel

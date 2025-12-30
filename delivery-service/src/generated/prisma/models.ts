@@ -9,4 +9,5 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Delivery.js'
+export type * from './models/DeliveryPartner.js'
 export type * from './commonInputTypes.js'

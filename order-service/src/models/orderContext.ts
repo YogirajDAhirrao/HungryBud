@@ -1,3 +1,4 @@
+import { deliveryClient } from "../clients/deliveryClients";
 import prisma from "../prisma/client";
 import { IOrderState } from "./states/IOrderState";
 
@@ -17,8 +18,12 @@ export class OrderContext {
     return this._state;
   }
 
-  setState(state: IOrderState) {
+  async setState(state: IOrderState) {
     this._state = state;
+    if (state.getStatus() === "ReadyForPickup") {
+      const delivery = await deliveryClient.createDelivery(this.orderId);
+      this.orderData.deliveryId = delivery.deliveryId;
+    }
   }
   getStatus() {
     return this._state.getStatus();
@@ -26,8 +31,11 @@ export class OrderContext {
   // persist the state to DB (atomic usage recommended in service layer)
   async persistStatus() {
     await prisma.order.update({
-      where: { id: this.orderId },
-      data: { status: this._state.getStatus() },
+      where: { id: this.orderId },  
+      data: {
+        status: this._state.getStatus(),
+        deliveryId: this.orderData?.deliveryId,
+      },
     });
   }
 

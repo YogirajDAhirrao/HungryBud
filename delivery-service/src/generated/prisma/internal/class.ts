@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.2.0",
   "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Delivery {\n  id        String         @id @default(uuid())\n  orderId   String         @unique // comes from Order Service\n  agentId   String? // assigned later\n  status    DeliveryStatus @default(DELIVERY_CREATED)\n  createdAt DateTime       @default(now())\n  updatedAt DateTime       @updatedAt\n}\n\nenum DeliveryStatus {\n  DELIVERY_CREATED\n  AGENT_ASSIGNED\n  PICKED_UP\n  ON_THE_WAY\n  DELIVERED\n  FAILED\n}\n",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Delivery {\n  id        String         @id @default(uuid())\n  orderId   String         @unique // comes from Order Service\n  agentId   String? // assigned later\n  status    DeliveryStatus @default(DELIVERY_CREATED)\n  createdAt DateTime       @default(now())\n  updatedAt DateTime       @updatedAt\n}\n\nmodel DeliveryPartner {\n  id        String   @id // userId from User Service\n  isActive  Boolean  @default(true)\n  isOnline  Boolean  @default(false)\n  createdAt DateTime @default(now())\n}\n\nenum DeliveryStatus {\n  DELIVERY_CREATED\n  AGENT_ASSIGNED\n  PICKED_UP\n  ON_THE_WAY\n  DELIVERED\n  FAILED\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Delivery\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"DeliveryStatus\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Delivery\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"orderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"DeliveryStatus\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"DeliveryPartner\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"isOnline\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -183,6 +183,16 @@ export interface PrismaClient<
     * ```
     */
   get delivery(): Prisma.DeliveryDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.deliveryPartner`: Exposes CRUD operations for the **DeliveryPartner** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DeliveryPartners
+    * const deliveryPartners = await prisma.deliveryPartner.findMany()
+    * ```
+    */
+  get deliveryPartner(): Prisma.DeliveryPartnerDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {
